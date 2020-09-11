@@ -42,4 +42,41 @@ class Post{
 
         return $stmt;
     }
+
+    //single post method
+    public function read_single(){
+        //crate query
+        $query = 'SELECT 
+                    c.name as category_name,
+                    p.id, 
+                    p.category_id, 
+                    p.title,
+                    p.body,
+                    p.author,
+                    p.created_at
+                FROM 
+                    ' . $this->table . ' p
+                LEFT JOIN
+                    categories c ON p.category_id = c.id
+                WHERE
+                    p.id = ?
+                LIMIT 0,1';
+         //prepare qurey
+         $stmt = $this->conn->prepare($query);
+
+         //BIND ID
+         $stmt->bindParam(1, $this->id);
+         //execute query
+         $stmt->execute();
+        
+         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+         $this->title = $row['title'];
+         $this->id = $row['id'];
+         $this->category_name = $row['category_name'];
+         $this->category_id = $row['category_id'];
+         $this->body = $row['body'];
+         $this->author = $row['author'];
+         $this->created_at = $row['created_at'];
+    }
 }
